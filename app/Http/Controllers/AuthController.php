@@ -24,11 +24,16 @@
             $validator = Validator::make($request->all(), [
                 'name' => 'required|string',
                 'email' => 'required|string', // Ensure unique email
-                'password' => 'required|string|min:8', // Enforce password requirements
+                'password' => 'required|confirmed|string|min:8', // Enforce password requirements
             ]);
 
             if ($validator->fails()) {
-                return response()->json($validator->errors(), 422);
+                return response()->json([
+                    'state' => 'fail',
+                    'message' => 'Invalid Input',
+                    'error'=>$validator->errors()
+            
+            ], 422);
             }
 
             $user = User::create([ // Create a new user model instance
@@ -41,10 +46,10 @@
             // $token = auth()->login($user); // Attempt login to generate token
 
             return response()->json([
-                'status' => 'success',
+                'state' => 'success',
                 'message' => 'User created successfully',
                 // 'token' => $token, // Include token if using optional generation
-            ]);
+            ],200);
         }
         /**
          * Get a JWT via given credentials.
@@ -56,30 +61,29 @@
             $credentials = request(['email', 'password']);
     
             if (! $token = auth()->attempt($credentials)) {
-                return response()->json(['error' => 'Unauthorized'], 401);
+                return response()->json([
+                    'state' => 'fail',
+                    'message'=>'User id or password is invalid',
+                ], 401);
             }
     
-            return $this->respondWithToken($token);
+            return response()->json([
+                'state' => 'success',
+                'message' => 'Logged in successfully',
+                'user'=>auth()->user(),
+                'access_token' => $token,
+                'token_type' => 'bearer',
+            ],200);
         }
         
         public function logout(){
+            
             auth()->logout();
 
-            return response()->json(['message' => 'Successfully logged out']);
-        }
-        /**
-         * Get the token array structure.
-         *
-         * @param  string $token
-         *
-         * @return \Illuminate\Http\JsonResponse
-         */
-        protected function respondWithToken($token)
-        {
             return response()->json([
-                'access_token' => $token,
-                'token_type' => 'bearer',
-            ]);
+                'state' => 'success',
+                'message' => 'Successfully logged out'
+            ],200);
         }
     }
 ?>
