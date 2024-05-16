@@ -23,13 +23,7 @@ class StoryController extends Controller
         ], 422);
     }
     public function show(Request $request){
-        $token = !$request->header['Authorization'];
-        if($token){
-            return response()->json([
-                'state' => 'fail',
-                'message' => 'Not Authorized. Try Again',
-            ], 401);
-        }
+        
         $validator = Validator::make($request->all(), [
             'language' => 'required',
             'level' => 'required', 
@@ -51,13 +45,14 @@ class StoryController extends Controller
 
         if ($stories) {
             return response()->json([
-                'status' => 'success',
+                'state' => 'success',
+                'message'=>'Data fetched successfully',
                 'data' => $stories,
             ]);
         } else {
             // No content found
             return response()->json([
-                'status' => 'error',
+                'state' => 'error',
                 'message' => 'No matching content found.',
             ], 404);
         }

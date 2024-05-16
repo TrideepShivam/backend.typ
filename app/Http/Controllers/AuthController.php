@@ -43,12 +43,14 @@
             ]);
 
             // Optionally generate a token upon registration (less secure):
-            // $token = auth()->login($user); // Attempt login to generate token
+            $token = auth()->login($user); // Attempt login to generate token
 
             return response()->json([
                 'state' => 'success',
                 'message' => 'User created successfully',
-                // 'token' => $token, // Include token if using optional generation
+                'user'=>auth()->user(),
+                'access_token' => $token,
+                'token_type' => 'bearer',
             ],200);
         }
         /**
