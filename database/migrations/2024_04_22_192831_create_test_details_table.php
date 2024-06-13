@@ -19,9 +19,10 @@ return new class extends Migration
             $table->integer('wpm');
             $table->integer('accuracy');
             $table->integer('words');
-            $table->integer('keystrokes');
+            $table->integer('kpm');
+            $table->integer('duration');
             $table->integer('char_with_spaces');
-            $table->integer('spaces');
+            $table->integer('errors');
         });
     }
 

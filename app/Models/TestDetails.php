@@ -4,19 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\TestAttempts;
 
-class Stories extends Model
+class TestDetails extends Model
 {
     use HasFactory;
-    protected $table = 'stories';
+    protected $table = 'test_details';
     protected $primaryKey = 'id';
     protected $fillable = [
-        'title',
-        'language',
-        'level',
-        'capitalized',
-        'numeric',
-        'content'
+        'wpm',
+        'accuracy',
+        'words',
+        'kpm',
+        'duration',
+        'char_with_spaces',
+        'errors'
     ];
     public function attempts()
     {

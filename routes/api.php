@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\StoryController;
+use App\Http\Controllers\TestController;
 
 Route::group([
     'middleware' => 'api',
@@ -15,4 +16,8 @@ Route::group([
 Route::group(['middleware' => 'api'],function ($router) {
     Route::post('stories', [StoryController::class,'index']);
     Route::post('story', [StoryController::class,'show']);
+});
+Route::group(['middleware' => 'api'],function($router){
+    Route::post('store-test', [TestController::class,'store']);
+    Route::post('attempt', [TestController::class,'show']);
 });
