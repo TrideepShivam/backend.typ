@@ -35,12 +35,20 @@
             
             ], 422);
             }
-
-            $user = User::create([ // Create a new user model instance
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password), // Hash the password securely
-            ]);
+            $existingUser = User::where('email', $request->email)->first();
+            if ($existingUser) {
+                return response()->json([
+                    'state' => 'error',
+                    'message' => 'User with this email already exists.',
+                ], 409); // 409 Conflict status code
+            }else{
+                $user = User::create([ // Create a new user model instance
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password), // Hash the password securely
+                ]);
+            }
+            
 
             // Optionally generate a token upon registration (less secure):
             $token = auth()->login($user); // Attempt login to generate token
