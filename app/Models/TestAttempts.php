@@ -14,8 +14,9 @@ class TestAttempts extends Model
     protected $primaryKey = 'id';
     protected $fillable = [
         'user_id',
-        'srory_id',
+        'story_id',
         'test_id',
+        'duration',
         'mistakes'
     ];
 

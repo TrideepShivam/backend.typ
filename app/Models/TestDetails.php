@@ -16,7 +16,6 @@ class TestDetails extends Model
         'accuracy',
         'words',
         'kpm',
-        'duration',
         'char_with_spaces',
         'errors'
     ];
