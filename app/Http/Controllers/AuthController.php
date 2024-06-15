@@ -56,7 +56,6 @@
             return response()->json([
                 'state' => 'success',
                 'message' => 'User created successfully',
-                'user'=>auth()->user(),
                 'access_token' => $token,
                 'token_type' => 'bearer',
             ],200);
@@ -80,7 +79,6 @@
             return response()->json([
                 'state' => 'success',
                 'message' => 'Logged in successfully',
-                'user'=>auth()->user(),
                 'access_token' => $token,
                 'token_type' => 'bearer',
             ],200);
