@@ -66,12 +66,12 @@ class TestController extends Controller
         }
         
     }
-    public function show(){
-        echo("called attempts");
-         
+    public function showAll(){
+        $attempts = TestAttempts::with(['User', 'Stories', 'TestDetail'])->get();
             return response()->json([
                 'state' => 'attempts',
                 'message' => 'working',
+                'data'=>$attempts
             ], 200);
     }
 }
