@@ -19,5 +19,5 @@ Route::group(['middleware' => 'api'],function ($router) {
 });
 Route::group(['middleware' => 'api'],function($router){
     Route::post('store-test', [TestController::class,'store']);
-    Route::post('get-attempts', [TestController::class,'show']);
+    Route::post('get-attempts', [TestController::class,'showAll']);
 });

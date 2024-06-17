@@ -66,12 +66,18 @@ class TestController extends Controller
         }
         
     }
-    public function showAll(){
-        $attempts = TestAttempts::with(['User', 'Stories', 'TestDetail'])->get();
-            return response()->json([
-                'state' => 'attempts',
-                'message' => 'working',
-                'data'=>$attempts
-            ], 200);
+    public function showAll(Request $request){
+        $user_id = JWTAuth::setToken($request->bearerToken())->authenticate()->id;
+        $attempts = TestAttempts::with([
+            'Stories'=> function ($query) {
+                $query->select('id','title','language'); // Specify the columns you want from the users table
+            }, 
+            'TestDetails'
+        ])->where('user_id',$user_id)->get();
+        return response()->json([
+            'state' => 'success',
+            'message' => 'Test attempts fetched successfully.',
+            'data'=>$attempts
+        ], 200);
     }
 }
