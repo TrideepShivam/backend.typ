@@ -44,8 +44,8 @@ class TestController extends Controller
             $mistakes=$request->mistakes;
             //create test details data and store in $test to get the id to attempt table
             $test = TestDetails::create([
-                'wpm'=>$words-count($mistakes)/$duration,
-                'accuracy'=>$words-count($mistakes)/$words*100,
+                'wpm'=>($words-count($mistakes))/$duration,
+                'accuracy'=>($words-count($mistakes))/$words*100,
                 'words'=>$words,
                 'kpm'=>$keystrokes/$duration,
                 'char_with_spaces'=>$char_with_spaces,
@@ -80,4 +80,26 @@ class TestController extends Controller
             'data'=>$attempts
         ], 200);
     }
+    public function show(Request $request){
+        $user_id = JWTAuth::setToken($request->bearerToken())->authenticate()->id;
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|numeric',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'state' => 'fail',
+                'message' => 'Invalid Input, Try again',        
+            ], 422);
+        }
+        $attempts = TestAttempts::with([
+            'Stories'=> function ($query) {
+                $query->select('id','title','language'); // Specify the columns you want from the users table
+            }, 
+            'TestDetails'
+        ])->where('user_id',$user_id)->where('id',$request->id)->get();
+        return response()->json([
+            'data'=>$attempts
+        ], 200);
+    } 
 }
