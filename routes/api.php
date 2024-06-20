@@ -16,6 +16,7 @@ Route::group([
 Route::group(['middleware' => 'api'],function ($router) {
     Route::post('stories', [StoryController::class,'index']);
     Route::post('story', [StoryController::class,'show']);
+    Route::post('levels', [StoryController::class,'levels']);
 });
 Route::group(['middleware' => 'api'],function($router){
     Route::post('store-test', [TestController::class,'store']);

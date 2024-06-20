@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Models\Stories;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class StoryController extends Controller
 {
@@ -54,6 +55,23 @@ class StoryController extends Controller
             return response()->json([
                 'state' => 'error',
                 'message' => 'No matching content found.',
+            ], 404);
+        }
+    }
+    public function levels(Request $request){
+        $user_id = JWTAuth::setToken($request->bearerToken())->authenticate()->id;
+
+        $levels = Stories::groupBy('level')->pluck('level');
+
+        if ($levels) {
+            return response()->json([
+                'data' => $levels,
+            ]);
+        } else {
+            // No content found
+            return response()->json([
+                'state' => 'error',
+                'message' => 'No level found.',
             ], 404);
         }
     }
