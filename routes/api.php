@@ -11,15 +11,15 @@ Route::group([
 ], function ($router) {
     Route::post('login', [AuthController::class,'login']);
     Route::post('register', [AuthController::class,'register']);
-    Route::post('logout', [AuthController::class,'logout']);
+    Route::get('logout', [AuthController::class,'logout']);
 });
 Route::group(['middleware' => 'api'],function ($router) {
     Route::post('stories', [StoryController::class,'index']);
     Route::post('story', [StoryController::class,'show']);
-    Route::post('levels', [StoryController::class,'levels']);
+    Route::get('level-language', [StoryController::class,'levelLanguage']);
 });
 Route::group(['middleware' => 'api'],function($router){
     Route::post('store-test', [TestController::class,'store']);
-    Route::post('get-attempts', [TestController::class,'showAll']);
+    Route::get('get-attempts', [TestController::class,'showAll']);
     Route::post('get-attempt', [TestController::class,'show']);
 });

@@ -58,14 +58,17 @@ class StoryController extends Controller
             ], 404);
         }
     }
-    public function levels(Request $request){
+    public function levelLanguage(Request $request){
         $user_id = JWTAuth::setToken($request->bearerToken())->authenticate()->id;
 
         $levels = Stories::groupBy('level')->pluck('level');
-
+        $languages = Stories::groupBy('language')->pluck('language');
         if ($levels) {
             return response()->json([
-                'data' => $levels,
+                'data' => [
+                    'levels'=>$levels,
+                    'language'=>$languages
+                ],
             ]);
         } else {
             // No content found
