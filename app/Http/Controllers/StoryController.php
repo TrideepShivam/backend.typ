@@ -17,19 +17,36 @@ class StoryController extends Controller
    {
        $this->middleware('auth:api');
    }
-    public function index(){
-        return response()->json([
-            'state' => 'fail',
-            'message' => 'API not in use',
-        ], 422);
+    public function index(Request $request){
+        $validator = Validator::make($request->all(), [
+            'level' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'state' => 'fail',
+                'message' => 'Invalid Input. Try Again',
+                'error'=>$validator->errors()
+            ], 422);
+        }else{
+            $stories = Stories::where('level', $request->level)->pluck('title'); // Filter by language
+            if ($stories) {
+                return response()->json([
+                    'data' => $stories,
+                ],200);
+            } else {
+                // No content found
+                return response()->json([
+                    'state' => 'error',
+                    'message' => 'No story found.',
+                ], 404);
+            }
+        }
     }
     public function show(Request $request){
         
         $validator = Validator::make($request->all(), [
             'language' => 'required',
-            'level' => 'required', 
-            'capitalized' => 'required', 
-            'numeric' => 'required', 
+            'level' => 'required',
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -39,15 +56,13 @@ class StoryController extends Controller
             ], 422);
         }
         $stories = Stories::where('language', $request->language) // Filter by language
-        ->where('capitalized', $request->capitalized) // Filter by capitalized
-        ->where('numeric', $request->numeric) // Filter by numeric
         ->where('level', $request->level) // Filter by level
         ->inRandomOrder()->first();
 
         if ($stories) {
             return response()->json([
                 'state' => 'success',
-                'message'=>'Data fetched successfully',
+                'message'=>'Story fetched successfully',
                 'data' => $stories,
             ]);
         } else {
@@ -63,7 +78,7 @@ class StoryController extends Controller
 
         $levels = Stories::groupBy('level')->pluck('level');
         $languages = Stories::groupBy('language')->pluck('language');
-        if ($levels) {
+        if ($levels&&$languages) {
             return response()->json([
                 'data' => [
                     'levels'=>$levels,
@@ -74,7 +89,7 @@ class StoryController extends Controller
             // No content found
             return response()->json([
                 'state' => 'error',
-                'message' => 'No level found.',
+                'message' => 'No data found.',
             ], 404);
         }
     }
