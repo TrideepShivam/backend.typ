@@ -14,8 +14,6 @@ class Stories extends Model
         'title',
         'language',
         'level',
-        'capitalized',
-        'numeric',
         'content'
     ];
     public function attempts()

@@ -17,9 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('language');
-            $table->integer('level');
-            $table->boolean('capitalized');
-            $table->boolean('numeric');
+            $table->string('level');
             $table->text('content');
             $table->timestamps();
         });
