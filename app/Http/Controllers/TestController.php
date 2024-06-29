@@ -32,7 +32,7 @@ class TestController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'state' => 'fail',
+                'state' => 'Error',
                 'message' => 'Invalid Input, Try again',        
         ], 422);
         }else{
@@ -73,11 +73,7 @@ class TestController extends Controller
             }, 
             'TestDetails'
         ])->where('user_id',$user_id)->get();
-        return response()->json([
-            'state' => 'success',
-            'message' => 'Test attempts fetched successfully.',
-            'data'=>$attempts
-        ], 200);
+        return response()->json($attempts, 200);
     }
     public function show(Request $request){
         $user_id = JWTAuth::setToken($request->bearerToken())->authenticate()->id;
@@ -87,7 +83,7 @@ class TestController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'state' => 'fail',
+                'state' => 'Error',
                 'message' => 'Invalid Input, Try again',        
             ], 422);
         }
@@ -97,8 +93,6 @@ class TestController extends Controller
             }, 
             'TestDetails'
         ])->where('user_id',$user_id)->where('id',$request->id)->get();
-        return response()->json([
-            'data'=>$attempts
-        ], 200);
+        return response()->json($attempts, 200);
     } 
 }

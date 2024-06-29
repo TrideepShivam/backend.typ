@@ -29,7 +29,7 @@
 
             if ($validator->fails()) {
                 return response()->json([
-                    'state' => 'fail',
+                    'state' => 'Error',
                     'message' => 'Invalid Input',
                     'error'=>$validator->errors()
             
@@ -38,7 +38,7 @@
             $existingUser = User::where('email', $request->email)->first();
             if ($existingUser) {
                 return response()->json([
-                    'state' => 'error',
+                    'state' => 'Error',
                     'message' => 'User with this email already exists.',
                 ], 409); // 409 Conflict status code
             }else{
@@ -54,7 +54,7 @@
             $token = auth()->login($user); // Attempt login to generate token
 
             return response()->json([
-                'state' => 'success',
+                'state' => 'Success',
                 'message' => 'User created successfully',
                 'user'=>auth()->user(),
                 'access_token' => $token,
@@ -72,13 +72,13 @@
     
             if (! $token = auth()->attempt($credentials)) {
                 return response()->json([
-                    'state' => 'fail',
+                    'state' => 'Error',
                     'message'=>'User id or password is invalid',
                 ], 401);
             }
     
             return response()->json([
-                'state' => 'success',
+                'state' => 'Success',
                 'message' => 'Logged in successfully',
                 'user'=>auth()->user(),
                 'access_token' => $token,
@@ -91,7 +91,7 @@
             auth()->logout();
 
             return response()->json([
-                'state' => 'success',
+                'state' => 'Success',
                 'message' => 'Successfully logged out'
             ],200);
         }

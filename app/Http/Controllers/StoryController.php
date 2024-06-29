@@ -19,27 +19,27 @@ class StoryController extends Controller
    }
     public function index(Request $request){
         $validator = Validator::make($request->all(), [
-            'level' => 'required'
+            'language' => 'required',
+            'level' => 'required',
         ]);
         if ($validator->fails()) {
             return response()->json([
-                'state' => 'fail',
+                'state' => 'Error',
                 'message' => 'Invalid Input. Try Again',
                 'error'=>$validator->errors()
             ], 422);
-        }else{
-            $stories = Stories::where('level', $request->level)->pluck('title'); // Filter by language
-            if ($stories) {
-                return response()->json([
-                    'data' => $stories,
-                ],200);
-            } else {
-                // No content found
-                return response()->json([
-                    'state' => 'error',
-                    'message' => 'No story found.',
-                ], 404);
-            }
+        }
+        $stories = Stories::where('language', $request->language) // Filter by language
+        ->where('level', $request->level)->pluck('title');
+
+        if ($stories) {
+            return response()->json($stories);
+        } else {
+            // No content found
+            return response()->json([
+                'state' => 'Error',
+                'message' => 'No content found.',
+            ], 404);
         }
     }
     public function show(Request $request){
@@ -47,28 +47,25 @@ class StoryController extends Controller
         $validator = Validator::make($request->all(), [
             'language' => 'required',
             'level' => 'required',
+            'story'=>'required'
         ]);
         if ($validator->fails()) {
             return response()->json([
-                'state' => 'fail',
+                'state' => 'Error',
                 'message' => 'Invalid Input. Try Again',
                 'error'=>$validator->errors()
             ], 422);
         }
         $stories = Stories::where('language', $request->language) // Filter by language
         ->where('level', $request->level) // Filter by level
-        ->inRandomOrder()->first();
+        ->where('title',$request->story)->first();
 
         if ($stories) {
-            return response()->json([
-                'state' => 'success',
-                'message'=>'Story fetched successfully',
-                'data' => $stories,
-            ]);
+            return response()->json($stories);
         } else {
             // No content found
             return response()->json([
-                'state' => 'error',
+                'state' => 'Error',
                 'message' => 'No matching content found.',
             ], 404);
         }
@@ -80,15 +77,13 @@ class StoryController extends Controller
         $languages = Stories::groupBy('language')->pluck('language');
         if ($levels&&$languages) {
             return response()->json([
-                'data' => [
-                    'levels'=>$levels,
-                    'language'=>$languages
-                ],
+                'levels'=>$levels,
+                'languages'=>$languages
             ]);
         } else {
             // No content found
             return response()->json([
-                'state' => 'error',
+                'state' => 'Error',
                 'message' => 'No data found.',
             ], 404);
         }
